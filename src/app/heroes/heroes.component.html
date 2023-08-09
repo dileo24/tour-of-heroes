@@ -1,0 +1,17 @@
+<h2>Hero List</h2>
+<ul class="heroes">
+  <!-- hago el loop en el elem li -->
+  <!-- cuando se hace clic se ekecuta onSelected -->
+  <li
+    *ngFor="let hero of heroes"
+    (click)="onSelected(hero)"
+    [class.selected]="hero === selectedHero"
+  >
+    <!-- si el hero actual es igual a selectedHero se aplica la clase selected -->
+    <span class="badge">{{ hero.id }}</span>
+    <span class="name">{{ hero.name }}</span>
+  </li>
+</ul>
+
+<!-- le paso el dato del heroe elegido para que muestre el detalle -->
+<app-hero-detail [hero]="selectedHero"></app-hero-detail>
