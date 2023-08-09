@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 import { Hero } from './hero';
 import { HEROES } from './mock-heroes';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,8 +14,11 @@ import { HEROES } from './mock-heroes';
 export class HeroService {
   constructor() {}
 
-  //creo el método getHeroes para que me retorne el array HEROES con objetos tipo Hero dentro
-  getHeroes(): Hero[] {
-    return HEROES;
+  //creo el método getHeroes para que me retorne un observable del array HEROES con objetos tipo Hero dentro
+  //se usa la clase Observable para manejar los datos asincrónicos
+  getHeroes(): Observable<Hero[]> {
+    //of() es para crear un nuevo observable que emita el arreglo HEROES
+    const heroes = of(HEROES);
+    return heroes;
   }
 }
