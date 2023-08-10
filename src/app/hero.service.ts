@@ -17,6 +17,11 @@ export class HeroService {
   constructor(private messageService: MessageService) {}
   //permite al servicio HeroService usar métodos y props del servicio MessageServic
 
+  getHero(id: number): Observable<Hero> {
+    const hero = HEROES.find((h) => h.id === id)!; //nunca va a devolver null
+    this.messageService.add('encontramos al héroe con id ' + id);
+    return of(hero); //se crea un observable que emite el héroe encontrado
+  }
   //creo el método getHeroes para que me retorne un observable del array HEROES con objetos tipo Hero dentro
   //se usa la clase Observable para manejar los datos asincrónicos
   getHeroes(): Observable<Hero[]> {

@@ -8,10 +8,10 @@
     [class.selected]="hero === selectedHero"
   >
     <!-- si el hero actual es igual a selectedHero se aplica la clase selected -->
-    <span class="badge">{{ hero.id }}</span>
-    <span class="name">{{ hero.name }}</span>
+
+    <a routerLink="/detail/{{ hero.id }}">
+      <span class="badge">{{ hero.id }}</span>
+      <span class="name">{{ hero.name }}</span>
+    </a>
   </li>
 </ul>
-
-<!-- le paso el dato del heroe elegido para que muestre el detalle -->
-<app-hero-detail [hero]="selectedHero"></app-hero-detail>
