@@ -28,7 +28,9 @@ export class HeroService {
     //of() es para crear un nuevo observable que emita el arreglo HEROES
     const heroes = of(HEROES);
 
-    this.messageService.add('The HeroService Fetched the Heroes');
+    this.messageService.add(
+      'HeroService buscó a todos los héroes correctamente'
+    );
     return heroes;
   }
 }

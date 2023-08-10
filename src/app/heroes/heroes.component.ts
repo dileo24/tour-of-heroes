@@ -33,9 +33,7 @@ export class HeroesComponent {
     //"x" es el valor que emite, o sea el array de HEROES,m así que se lo asigno a la prop "heroes"
   }
   onSelected(hero: Hero): void {
-    this.messageService.add(
-      `You selected Hero with id of ${hero.id} and name ${hero.name}`
-    );
+    this.messageService.add(`Seleccionaste al héroe ${hero.name}`);
     //se pone void porque no devuelve ningún valor
     //método que toma un un objeto Hero como argumento
     this.selectedHero = hero; //asigna el héroe seleccionado a la prop selectedHero
