@@ -38,4 +38,22 @@ export class HeroesComponent {
     //método que toma un un objeto Hero como argumento
     this.selectedHero = hero; //asigna el héroe seleccionado a la prop selectedHero
   }
+
+  add(name: string): void {
+    //trim elimina cualquier espacio en blanco
+    name = name.trim();
+    if (!name) {
+      return;
+    }
+    //se llama a addHero de HeroService para crear un héroe
+    this.heroService.addHero({ name } as Hero).subscribe((hero) => {
+      //se suscribe al observable devuelto después de agregar al héroe
+      this.heroes.push(hero); //se actualiza después el arreglo de héroes
+    });
+  }
+
+  delete(hero: Hero): void {
+    this.heroes = this.heroes.filter((h) => h !== hero);
+    this.heroService.deleteHero(hero.id).subscribe();
+  }
 }
