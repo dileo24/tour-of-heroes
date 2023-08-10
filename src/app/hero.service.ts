@@ -45,9 +45,10 @@ export class HeroService {
   //se usa la clase Observable para manejar los datos asincrónicos
   getHeroes(): Observable<Hero[]> {
     //se usa el método "get" de HttpClient
-    //"pipe" es un método para encadenar operadores en observables
+    //"pipe" es un método para encadenar operadores en observables, en este caso el "tap" y el "catchError"
     return this.http.get<Hero[]>(this.heroesUrl).pipe(
-      //se usa tap para acciones secundarias en el flujo de datos
+      //se usa tap para acciones secundarias en el flujo de datos del observable
+      //o sea, para ejecutar código que no afecte el valor emitido del observ
       //en este caso agregar un mensaje en MessageService
       tap((_) => this.log('heroes listados')),
       //se utiliza el catchError para manejar los errores
