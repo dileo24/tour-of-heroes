@@ -6,6 +6,8 @@ import { Hero } from './hero';
 import { HEROES } from './mock-heroes';
 import { Observable, of } from 'rxjs';
 import { MessageService } from './message.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,24 +15,60 @@ import { MessageService } from './message.service';
 //Injectable hace que el servicio esté disponible desde la raíz de la app, para que
 //pueda ser inyectado en otros componentes sin configuración extra
 export class HeroService {
+  private heroesUrl = 'api/heroes';
+  httpOptions = {
+    //cabecera Content-Type para indicar que el contenido del cuerpo enviará datos JSON
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+  };
+
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      console.error(error);
+      this.log(`${operation} failed: ${error.message}`);
+      return of(result as T);
+    };
+  }
+
   //acepta una inyección de dependencia del servicio MessageService
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private http: HttpClient
+  ) {}
   //permite al servicio HeroService usar métodos y props del servicio MessageServic
 
-  getHero(id: number): Observable<Hero> {
-    const hero = HEROES.find((h) => h.id === id)!; //nunca va a devolver null
-    this.messageService.add('encontramos al héroe con id ' + id);
-    return of(hero); //se crea un observable que emite el héroe encontrado
+  //método para agregar mensajes al servicio MessageService
+  private log(message: string) {
+    this.messageService.add(`HeroService: ${message}`);
   }
+
   //creo el método getHeroes para que me retorne un observable del array HEROES con objetos tipo Hero dentro
   //se usa la clase Observable para manejar los datos asincrónicos
   getHeroes(): Observable<Hero[]> {
-    //of() es para crear un nuevo observable que emita el arreglo HEROES
-    const heroes = of(HEROES);
-
-    this.messageService.add(
-      'HeroService buscó a todos los héroes correctamente'
+    //se usa el método "get" de HttpClient
+    //"pipe" es un método para encadenar operadores en observables
+    return this.http.get<Hero[]>(this.heroesUrl).pipe(
+      //se usa tap para acciones secundarias en el flujo de datos
+      //en este caso agregar un mensaje en MessageService
+      tap((_) => this.log('heroes listados')),
+      //se utiliza el catchError para manejar los errores
+      catchError(this.handleError<Hero[]>('error en getHeroes', []))
     );
-    return heroes;
+
+    //of() es para crear un nuevo observable que emita el arreglo HEROES
+    //const heroes = of(HEROES);
+  }
+
+  getHero(id: number): Observable<Hero> {
+    return this.http.get<Hero>(`${this.heroesUrl}/${id}`).pipe(
+      tap((_) => this.log(`encontramos al héroe con id${id}`)),
+      catchError(this.handleError<Hero>(`error en getHero id=${id}`))
+    );
+  }
+
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
+      tap((_) => this.log(`Actualizado el héroe con id ${hero.id}`)),
+      catchError(this.handleError<any>('updateHero'))
+    );
   }
 }
